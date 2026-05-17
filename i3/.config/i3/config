@@ -183,5 +183,12 @@ for_window [class=".*"] border pixel 1
 for_window [class="kitty"] floating enable, resize set 800 800, move position center
 floating_minimum_size 200 x 200
 
+for_window [floating] resize set 800 800, move position center
+
+bindsym $mod+Tab focus right
+bindsym $mod+Shift+Tab focus left
+
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+minus scratchpad show
 
 smart_gaps on
