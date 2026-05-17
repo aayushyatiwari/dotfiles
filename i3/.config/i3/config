@@ -5,41 +5,44 @@
 #
 # --- BASIC SETTINGS -----------------------------------------------------------
 set $mod Mod1
-font pango:JetBrainsMono Nerd Font Medium 16
+font pango:JetBrainsMono Nerd Font Medium 12
 exec --no-startup-id blueman-applet
-exec_always --no-startup-id killall picom && picom &
+exec_always --no-startup-id killall picom ; picom --config ~/.config/picom/picom.conf &
 exec_always --no-startup-id setxkbmap -option "caps:ctrl_modifier"
-exec_always --no-startup-id xrandr --output eDP-1 --auto --output HDMI-1-0 --auto --left-of eDP-1
+# ------ monitor line---------
+exec_always --no-startup-id xrandr --output eDP-1 --auto --output HDMI-1-0 --auto --left-of eDP-1 
+# ----------------------------
 exec --no-startup-id redshift -m randr -l 11.93:79.83 -t 6500:3500
-# exec_always --no-startup-id autotiling
+exec --no-startup-id dunst
 
 # --- STARTUP PROGRAMS ---------------------------------------------------------
-exec_always --no-startup-id killall polybar
 exec_always --no-startup-id ~/.config/polybar/launch.sh
 exec --no-startup-id dex --autostart --environment i3
-exec_always --no-startup-id feh --bg-scale ~/Pictures/1-2-26_bg.jpg
+exec_always --no-startup-id ~/.local/bin/set-wallpaper.sh ~/Pictures/1-2-26_bg.jpg
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 exec --no-startup-id nm-applet
 exec --no-startup-id blueman-applet
 exec --no-startup-id flameshot
 
 # --- APP SHORTCUTS ------------------------------------------------------------
-bindsym Control+Shift+S exec --no-startup-id spotify
 bindsym Print exec flameshot gui
 bindsym Control+Shift+A exec --no-startup-id brave-browser --app-id=fmpnliohjhemenmnlpbfagaolkdacoja
 
 ## --- Color Variables ---
-set $bg      #282a36
-set $fg      #f8f8f2
-set $cyan    #8be9fd
-set $green   #50fa7b
-set $red     #ff5555
-set $yellow  #f1fa8c
-set $purple  #bd93f9
-set $gray    #44475a
+set $bg      #2e3440
+set $fg      #d8dee9
+set $cyan    #88c0d0
+set $green   #a3be8c
+set $red     #bf616a
+set $yellow  #ebcb8b
+set $purple  #b48ead
+set $gray    #4c566a
+
+# --- WINDOW TITLES & TABS ------------------------------------------------------
+title_align center
 
 # class                 border  backgr. text    indicator child_border
-client.focused          $purple $purple $fg     $purple   $purple
+client.focused          $cyan   $cyan   $bg     $cyan     $cyan
 client.focused_inactive $gray   $gray   $fg     $gray     $gray
 client.unfocused        $bg     $bg     $gray   $bg       $bg
 client.urgent           $red    $red    $fg     $red      $red
@@ -106,17 +109,6 @@ set $ws7 "7"
 set $ws8 "8"
 set $ws9 "9"
 set $ws10 "10"
-
-#workspace 1 output HDMI-1-0
-#workspace 2 output HDMI-1-0
-#workspace 3 output HDMI-1-0
-#workspace 4 output HDMI-1-0
-#workspace 5 output HDMI-1-0
-#workspace 6 output eDP-1
-#workspace 7 output eDP-1
-#workspace 8 output eDP-1
-#workspace 9 output eDP-1
-#workspace 10 output eDP-1
 
 # switch
 bindsym $mod+1 workspace number $ws1
