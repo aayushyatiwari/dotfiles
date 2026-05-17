@@ -17,7 +17,7 @@ exec --no-startup-id dunst
 
 # --- STARTUP PROGRAMS ---------------------------------------------------------
 exec --no-startup-id dex --autostart --environment i3
-exec_always --no-startup-id ~/.local/bin/set-background.sh ~/Pictures/1-2-26_bg.jpg
+exec_always --no-startup-id ~/.local/bin/set-background.sh
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 exec --no-startup-id nm-applet
 exec --no-startup-id blueman-applet
