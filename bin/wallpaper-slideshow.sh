@@ -5,7 +5,7 @@
 WALLPAPER_DIR="$HOME/Pictures/wallpapers"
 
 # Interval in seconds (e.g., 300 for 5 minutes)
-INTERVAL=10
+INTERVAL=300
 
 # Check if the folder exists
 if [ ! -d "$WALLPAPER_DIR" ]; then

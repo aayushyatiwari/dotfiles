@@ -6,7 +6,6 @@
 # --- BASIC SETTINGS -----------------------------------------------------------
 set $mod Mod1
 font pango:JetBrainsMono Nerd Font Medium 12
-exec --no-startup-id blueman-applet
 exec_always --no-startup-id killall picom ; picom --config ~/.config/picom/picom.conf &
 exec_always --no-startup-id setxkbmap -option "caps:ctrl_modifier"
 # ------ monitor line---------
@@ -17,8 +16,7 @@ exec --no-startup-id dunst
 
 # --- STARTUP PROGRAMS ---------------------------------------------------------
 exec --no-startup-id dex --autostart --environment i3
-exec_always --no-startup-id ~/.local/bin/set-background.sh
-exec --no-startup-id ~/.local/bin/wallpaper-slideshow.sh &
+exec --no-startup-id ~/.local/bin/wallpaper-slideshow.sh
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 exec --no-startup-id nm-applet
 exec --no-startup-id blueman-applet
