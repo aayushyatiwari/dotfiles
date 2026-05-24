@@ -1,0 +1,51 @@
+# i3status configuration for the built-in i3 bar.
+
+general {
+        colors = true
+        interval = 5
+        color_good = "#00AA00"
+        color_degraded = "#FFAA00"
+        color_bad = "#FF0000"
+        separator = " | "
+}
+
+order += "wireless wlp0s20f3"
+order += "read_file WIFI_MAC"
+order += "battery all"
+order += "disk /"
+order += "volume master"
+order += "tztime local"
+
+wireless wlp0s20f3 {
+        format_up = "WiFi: %essid %ip"
+        format_down = "WiFi: down"
+}
+
+read_file WIFI_MAC {
+        path = "/sys/class/net/wlp0s20f3/address"
+        format = "MAC: %content"
+        format_bad = "MAC: unavailable"
+        Max_characters = 17
+}
+
+battery all {
+        format = "%status %percentage"
+        last_full_capacity = true
+        format_down = "BAT: none"
+}
+
+disk "/" {
+        format = "DISK: %avail"
+}
+
+volume master {
+        format = "VOL: %volume"
+        format_muted = "VOL: muted (%volume)"
+        device = "default"
+        mixer = "Master"
+        mixer_idx = 0
+}
+
+tztime local {
+        format = "%Y-%m-%d %H:%M:%S"
+}

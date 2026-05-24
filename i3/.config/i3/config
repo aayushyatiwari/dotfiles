@@ -5,10 +5,11 @@
 #
 # --- BASIC SETTINGS -----------------------------------------------------------
 set $mod Mod1
-font pango:JetBrainsMono Nerd Font Medium 12
-exec_always --no-startup-id killall picom ; picom --config ~/.config/picom/picom.conf &
+font pango:monospace 14
+exec_always --no-startup-id sh -c 'killall picom; sleep 0.2; picom --config "$HOME/.config/picom/picom.conf"'
 exec_always --no-startup-id setxkbmap -option "caps:ctrl_modifier"
-exec_always --no-startup-id ~/.config/polybar/launch.sh
+# Use the built-in i3 bar below instead of Polybar.
+exec_always --no-startup-id killall polybar
 
 # ------ monitor line---------
 exec_always --no-startup-id xrandr --output eDP-1 --auto --output HDMI-1-0 --auto --left-of eDP-1 
@@ -18,7 +19,6 @@ exec --no-startup-id dunst
 
 # --- STARTUP PROGRAMS ---------------------------------------------------------
 exec --no-startup-id dex --autostart --environment i3
-exec --no-startup-id ~/.local/bin/wallpaper-slideshow.sh
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 exec --no-startup-id nm-applet
 exec --no-startup-id blueman-applet
@@ -26,28 +26,6 @@ exec --no-startup-id flameshot
 
 # --- APP SHORTCUTS ------------------------------------------------------------
 bindsym Print exec flameshot gui
-bindsym Control+Shift+A exec --no-startup-id brave-browser --app-id=fmpnliohjhemenmnlpbfagaolkdacoja
-
-## --- Color Variables ---
-set $bg      #2e3440
-set $fg      #d8dee9
-set $cyan    #88c0d0
-set $green   #a3be8c
-set $red     #bf616a
-set $yellow  #ebcb8b
-set $purple  #b48ead
-set $gray    #4c566a
-
-# --- WINDOW TITLES & TABS ------------------------------------------------------
-title_align center
-
-# class                 border  backgr. text    indicator child_border
-client.focused          $cyan   $cyan   $bg     $cyan     $cyan
-client.focused_inactive $gray   $gray   $fg     $gray     $gray
-client.unfocused        $bg     $bg     $gray   $bg       $bg
-client.urgent           $red    $red    $fg     $red      $red
-client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
-client.background       #ffffff
 
 # --- AUDIO CONTROLS -----------------------------------------------------------
 
@@ -172,11 +150,8 @@ bindsym $mod+s layout stacked
 bindsym $mod+e layout toggle split
 
 
-default_border pixel 1          
-default_floating_border pixel 1
-
-# Force all windows (very reliable)
-for_window [class=".*"] border pixel 1
+default_border normal
+default_floating_border normal
 
 
 # always open kitty in small floating window
@@ -191,4 +166,6 @@ bindsym $mod+Shift+Tab focus left
 bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
 
-smart_gaps on
+bar {
+    status_command i3status -c ~/.config/i3status/config
+}
