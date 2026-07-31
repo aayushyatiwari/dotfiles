@@ -1,22 +1,23 @@
 # i3 config file (v4)
 # Auto-generated once by i3-config-wizard, now customized.
-# Start the autotiling script for Hyprland-like layout
-# exec_always --no-startup-id autotiling ~/.local/bin/autotiling
-#
+
+default_border none 
+default_floating_border none
+
 # --- BASIC SETTINGS -----------------------------------------------------------
 set $mod Mod1
 font pango:monospace 14
 exec_always --no-startup-id sh -c 'killall picom; sleep 0.2; picom --config "$HOME/.config/picom/picom.conf"'
 exec_always --no-startup-id setxkbmap -option "caps:ctrl_modifier"
-# Use the built-in i3 bar below instead of Polybar.
 exec_always --no-startup-id killall polybar
-
+# exec_always --no-startup-id feh --randomize --bg-fill ~/Pictures/wallpapers/nope/*   
+exec_always --no-startup-id feh --bg-fill ~/Pictures/wallpapers/nope/ign_lonely-man.png
 # ------ monitor line---------
 exec_always --no-startup-id xrandr --output eDP-1 --auto --output HDMI-1-0 --auto --left-of eDP-1 
 # ----------------------------
 exec --no-startup-id redshift -m randr -l 11.93:79.83 -t 6500:3500
 exec --no-startup-id dunst
-
+bindsym $mod+Shift+f exec --no-startup-id magnify
 # --- STARTUP PROGRAMS ---------------------------------------------------------
 exec --no-startup-id dex --autostart --environment i3
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
@@ -25,20 +26,21 @@ exec --no-startup-id blueman-applet
 exec --no-startup-id flameshot
 
 # --- APP SHORTCUTS ------------------------------------------------------------
-bindsym Print exec flameshot gui
+bindsym Print exec --no-startup-id /usr/bin/flameshot gui
 
-# --- AUDIO CONTROLS -----------------------------------------------------------
-
+# --- AUDIO CONTROLS (FIXED FOR ARCH PIPEWIRE) ---------------------------------
 set $refresh_i3status killall -SIGUSR1 i3status
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
-bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 
-# --- CUSTOM AUDIO SHORTCUTS ---------------------------------------------------
-bindsym $mod+Control+Up exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
-bindsym $mod+Control+Down exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
-bindsym $mod+Control+m exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+# Laptop Hardware Media Keys
+bindsym XF86AudioRaiseVolume exec --no-startup-id wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ && $refresh_i3status
+bindsym XF86AudioLowerVolume exec --no-startup-id wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && $refresh_i3status
+bindsym XF86AudioMute exec --no-startup-id wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && $refresh_i3status
+bindsym XF86AudioMicMute exec --no-startup-id wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle && $refresh_i3status
+
+# Custom Audio Key Shortcuts
+bindsym $mod+Control+Up exec --no-startup-id wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ && $refresh_i3status
+bindsym $mod+Control+Down exec --no-startup-id wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && $refresh_i3status
+bindsym $mod+Control+m exec --no-startup-id wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && $refresh_i3status
 
 # --- BRIGHTNESS ---------------------------------------------------------------
 bindsym F6 exec brightnessctl set 10%-
@@ -57,7 +59,7 @@ bindsym Mod4+T kill
 # launcher
 bindsym Control+Shift+j exec --no-startup-id rofi -show drun
 
-# focus movement
+# focus movement (Vim Keys)
 bindsym $mod+h focus left
 bindsym $mod+j focus down
 bindsym $mod+k focus up
@@ -112,7 +114,7 @@ bindsym $mod+Shift+8 move container to workspace number $ws8
 bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
 
-# move to workspace left/right
+# move to workspace left/right (Vim Keys)
 bindsym Mod4+h workspace prev
 bindsym Mod4+l workspace next
 
@@ -138,27 +140,17 @@ mode "resize" {
 }
 bindsym $mod+r mode "resize"
 
-
 # Set default layout to horizontal split
 bindsym $mod+Control+v split v
 bindsym $mod+Control+h split h
 
-# (This switches the container of the focused window)
-# NOTE: Press $mod+Shift+t to disable autotiling before using these
 bindsym $mod+w layout tabbed
 bindsym $mod+s layout stacked
 bindsym $mod+e layout toggle split
 
 
-default_border normal
-default_floating_border normal
-
-
-# always open kitty in small floating window
-for_window [class="kitty"] floating enable, resize set 800 800, move position center
-floating_minimum_size 200 x 200
-
-for_window [floating] resize set 800 800, move position center
+# window overrides
+for_window [class="kitty"] floating enable, resize set 800 500, move position center
 
 bindsym $mod+Tab focus right
 bindsym $mod+Shift+Tab focus left
