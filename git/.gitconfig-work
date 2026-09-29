@@ -1,0 +1,6 @@
+# Loaded only for repos under ~/work/ (see ~/.gitconfig)
+[user]
+	name = aayushya-neurorayr
+	email = aayushya@neurorayr.ai
+[core]
+	sshCommand = ssh -i ~/.ssh/id_ed25519_company -o IdentitiesOnly=yes

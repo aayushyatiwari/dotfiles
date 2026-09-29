@@ -1,0 +1,19 @@
+#!/bin/sh
+# Launch Hyprland from a TTY, the way `startx` launches i3.
+# Mirrors ~/.xinitrc: set the session identity, then exec the compositor.
+set -eu
+
+if [ -n "${WAYLAND_DISPLAY:-}" ] || [ -n "${DISPLAY:-}" ]; then
+    echo "hypr: a graphical session is already running on this terminal." >&2
+    exit 1
+fi
+
+export XDG_SESSION_TYPE=wayland
+export XDG_CURRENT_DESKTOP=Hyprland
+export XDG_SESSION_DESKTOP=Hyprland
+
+# Hyprland needs a runtime dir; logind normally provides it on a real TTY login.
+: "${XDG_RUNTIME_DIR:=/run/user/$(id -u)}"
+export XDG_RUNTIME_DIR
+
+exec dbus-run-session Hyprland

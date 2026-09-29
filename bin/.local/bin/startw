@@ -1,0 +1,13 @@
+#!/bin/sh
+# The Wayland counterpart to `startx`. Run it from a bare TTY.
+#
+# Hyprland is its own display server, so there is no Xorg to start and no
+# ~/.xinitrc equivalent: session env vars live in `env = ...` lines inside
+# ~/.config/hypr/hyprland.conf, and startup programs in `exec-once = ...`.
+
+if [ -n "$WAYLAND_DISPLAY" ] || [ -n "$DISPLAY" ]; then
+    echo "startw: already inside a graphical session; switch to a free TTY first." >&2
+    exit 1
+fi
+
+exec dbus-run-session start-hyprland

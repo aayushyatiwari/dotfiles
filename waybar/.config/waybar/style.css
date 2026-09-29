@@ -1,0 +1,88 @@
+/* Waybar styled to sit inside Omarchy's look'n'feel: same 10px gap as
+   `gaps_out`, square corners like `rounding = 0`, and the same
+   #33ccff -> #00ff99 accent as the active window border.
+   Module content is still a 1:1 port of ~/.config/i3status/config. */
+
+* {
+    font-family: "JetBrainsMono Nerd Font", "Iosevka Nerd Font", monospace;
+    font-size: 13px;
+    min-height: 0;
+    border: none;
+    border-radius: 0;
+}
+
+window#waybar {
+    background: rgba(0, 0, 0, 0.75);
+    color: #ffffff;
+    border: 2px solid rgba(89, 89, 89, 0.67);   /* col.inactive_border */
+}
+
+/* Workspace buttons: the focused one carries the accent, like the window border. */
+#workspaces {
+    margin-left: 4px;
+}
+
+#workspaces button {
+    padding: 0 10px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.45);
+    border-bottom: 2px solid transparent;
+}
+
+#workspaces button:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+}
+
+#workspaces button.visible {
+    color: rgba(255, 255, 255, 0.8);
+    border-bottom: 2px solid rgba(89, 89, 89, 0.67);
+}
+
+#workspaces button.active {
+    color: #ffffff;
+    background: rgba(51, 204, 255, 0.12);
+    border-bottom: 2px solid #33ccff;
+}
+
+#workspaces button.urgent {
+    color: #ffffff;
+    background: rgba(144, 0, 0, 0.6);
+    border-bottom: 2px solid #ff0000;
+}
+
+#network,
+#custom-mac,
+#battery,
+#disk,
+#wireplumber,
+#clock {
+    padding: 0 3px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+#clock {
+    color: #ffffff;
+    padding-right: 10px;
+}
+
+#tray {
+    padding: 0 8px;
+}
+
+/* i3status: color_good / color_degraded / color_bad */
+#network.disconnected,
+#battery.critical,
+#battery.bad {
+    color: #ff5555;
+}
+
+#battery.degraded,
+#battery.warning {
+    color: #ffaa00;
+}
+
+#battery.charging,
+#battery.full {
+    color: #00ff99;
+}

@@ -1,0 +1,85 @@
+// Waybar standing in for i3bar + i3status.
+// Module order and every format string are copied from ~/.config/i3status/config
+// so the bar reads exactly the same. The " | " prefixes reproduce i3status's
+// `separator = " | "`.
+{
+    "layer": "top",
+    "position": "bottom",          // i3bar's spot; "top" is where Omarchy puts it
+    "height": 34,
+    "margin-bottom": 10,
+    "margin-left": 10,
+    "margin-right": 10,
+    "spacing": 0,
+
+    "modules-left": ["hyprland/workspaces"],
+    "modules-center": [],
+    "modules-right": [
+        "network",
+        "custom/mac",
+        "battery",
+        "disk",
+        "wireplumber",
+        "clock",
+        "tray"
+    ],
+
+    "hyprland/workspaces": {
+        "format": "{name}",
+        "on-click": "activate",
+        "sort-by-number": true
+    },
+
+    // i3status: wireless wlp0s20f3 — "WiFi: %essid %ip" / "WiFi: down"
+    "network": {
+        "interface": "wlp0s20f3",
+        "interval": 5,
+        "format-wifi": "WiFi: {essid} {ipaddr}",
+        "format-disconnected": "WiFi: down",
+        "format-ethernet": "WiFi: down",
+        "tooltip-format": "{essid} ({signalStrength}%)"
+    },
+
+    // i3status: read_file WIFI_MAC — "MAC: %content"
+    "custom/mac": {
+        "exec": "cat /sys/class/net/wlp0s20f3/address 2>/dev/null || echo unavailable",
+        "format": " | MAC: {}",
+        "interval": 300
+    },
+
+    // i3status: battery all — "%status %percentage"
+    "battery": {
+        "interval": 5,
+        "states": { "degraded": 30, "bad": 15 },
+        "format": " | BAT {capacity}%",
+        "format-charging": " | CHR {capacity}%",
+        "format-plugged": " | CHR {capacity}%",
+        "format-full": " | FULL {capacity}%"
+    },
+
+    // i3status: disk "/" — "DISK: %avail"
+    "disk": {
+        "path": "/",
+        "interval": 30,
+        "format": " | DISK: {free}"
+    },
+
+    // i3status: volume master — "VOL: %volume" / "VOL: muted"
+    "wireplumber": {
+        "format": " | VOL: {volume}%",
+        "format-muted": " | VOL: muted",
+        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+    },
+
+    // i3status: tztime local — "%Y-%m-%d %H:%M:%S"
+    "clock": {
+        "interval": 1,
+        "format": " | {:%Y-%m-%d %H:%M:%S}",
+        "tooltip-format": "<tt>{calendar}</tt>"
+    },
+
+    // i3bar's system tray: nm-applet and blueman-applet land here.
+    "tray": {
+        "icon-size": 16,
+        "spacing": 8
+    }
+}

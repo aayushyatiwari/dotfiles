@@ -1,8 +1,6 @@
 # i3 config file (v4)
 # Auto-generated once by i3-config-wizard, now customized.
 
-default_border none 
-default_floating_border none
 
 # --- BASIC SETTINGS -----------------------------------------------------------
 set $mod Mod1
@@ -13,7 +11,8 @@ exec_always --no-startup-id killall polybar
 # exec_always --no-startup-id feh --randomize --bg-fill ~/Pictures/wallpapers/nope/*   
 exec_always --no-startup-id feh --bg-fill ~/Pictures/wallpapers/nope/ign_lonely-man.png
 # ------ monitor line---------
-exec_always --no-startup-id xrandr --output eDP-1 --auto --output HDMI-1-0 --auto --left-of eDP-1 
+# exec_always --no-startup-id xrandr --output eDP-1 --auto --output HDMI-1-0 --auto --right-of eDP-1 
+exec_always --no-startup-id xrandr --output HDMI-1-0 --auto --same-as eDP-1
 # ----------------------------
 exec --no-startup-id redshift -m randr -l 11.93:79.83 -t 6500:3500
 exec --no-startup-id dunst
@@ -49,6 +48,10 @@ bindsym F7 exec brightnessctl set +10%
 # --- WINDOW MANAGEMENT --------------------------------------------------------
 floating_modifier $mod
 tiling_drag modifier titlebar
+
+# remove title bars (thin border instead), for both tiling and floating windows
+default_border pixel 2
+default_floating_border pixel 2
 
 # start a terminal
 bindsym $mod+Return exec kitty 

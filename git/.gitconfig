@@ -1,0 +1,7 @@
+# Personal identity by default. Anything under ~/work/ switches to the
+# work identity + work SSH key (see ~/.gitconfig-work).
+[user]
+	name = aayushyatiwari
+	email = kb24.aayush@gmail.com
+[includeIf "gitdir:~/work/"]
+	path = ~/.gitconfig-work

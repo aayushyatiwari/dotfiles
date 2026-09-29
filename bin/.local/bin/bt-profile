@@ -1,0 +1,148 @@
+#!/usr/bin/env bash
+# bt-profile — Quick Bluetooth profile switcher for JBL Tune 770NC
+#
+# Usage:
+#   bt-profile music   → Switch to A2DP (high-quality stereo, NO mic)
+#   bt-profile meet    → Switch to HFP/mSBC (mic enabled, for Google Meet)
+#   bt-profile status  → Show current profile
+#   bt-profile         → Interactive toggle
+#
+# Profiles explained:
+#   a2dp-sink          : A2DP — stereo 44.1kHz/48kHz, no microphone. Best for music.
+#   headset-head-unit  : HFP with mSBC — 16kHz mono, microphone enabled. For calls.
+
+DEVICE_MAC="A8:E6:E8:C9:85:50"
+CARD_NAME="bluez_card.A8_E6_E8_C9_85_50"
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+NC='\033[0m'
+
+get_current_profile() {
+    pactl list cards 2>/dev/null | grep -A 60 "$CARD_NAME" | grep "Active Profile:" | head -1 | awk -F': ' '{print $2}' | tr -d '[:space:]'
+}
+
+get_available_profiles() {
+    pactl list cards 2>/dev/null | grep -A 50 "$CARD_NAME" | grep -E "^\s+[a-z].*\(sinks:" | awk -F: '{print $1}' | tr -d '[:space:]'
+}
+
+check_connected() {
+    if ! pactl list cards 2>/dev/null | grep -q "$CARD_NAME"; then
+        echo -e "${RED}✗ JBL Tune 770NC is not connected${NC}"
+        echo -e "  Try: ${YELLOW}bluetoothctl connect $DEVICE_MAC${NC}"
+        exit 1
+    fi
+}
+
+switch_profile() {
+    local profile="$1"
+    local label="$2"
+    
+    echo -e "${BLUE}→ Switching to ${BOLD}$label${NC}${BLUE}...${NC}"
+    
+    if pactl set-card-profile "$CARD_NAME" "$profile" 2>/dev/null; then
+        sleep 0.5
+        local new_profile
+        new_profile=$(get_current_profile)
+        echo -e "${GREEN}✓ Active profile: ${BOLD}$new_profile${NC}"
+    else
+        echo -e "${RED}✗ Failed to switch profile${NC}"
+        echo -e "  Available profiles:"
+        get_available_profiles | while read -r p; do
+            echo -e "    ${CYAN}$p${NC}"
+        done
+        exit 1
+    fi
+}
+
+show_status() {
+    check_connected
+    local current
+    current=$(get_current_profile)
+    
+    echo -e "${BOLD}JBL Tune 770NC — Current Status${NC}"
+    echo -e "  Profile: ${CYAN}${current}${NC}"
+    
+    case "$current" in
+        a2dp-sink*)
+            echo -e "  Mode:    ${GREEN}🎵 Music (A2DP — High Quality Stereo, no mic)${NC}"
+            ;;
+        headset-head-unit*)
+            echo -e "  Mode:    ${YELLOW}📞 Headset (HFP — Mic enabled, for calls/Meet)${NC}"
+            ;;
+        off)
+            echo -e "  Mode:    ${RED}⊘ Off${NC}"
+            ;;
+        *)
+            echo -e "  Mode:    ${CYAN}$current${NC}"
+            ;;
+    esac
+    
+    echo ""
+    echo -e "  Sinks:   $(pactl list sinks short 2>/dev/null | grep -i bluez | awk '{print $2, $4}')"
+    echo -e "  Sources: $(pactl list sources short 2>/dev/null | grep -i "bluez_input" | awk '{print $2, $4}')"
+}
+
+toggle_profile() {
+    check_connected
+    local current
+    current=$(get_current_profile)
+    
+    case "$current" in
+        a2dp-sink*)
+            switch_profile "headset-head-unit" "Headset / Google Meet (HFP + mic)"
+            ;;
+        headset-head-unit*|headset-head-unit-cvsd*)
+            # Check if a2dp-sink is available
+            if pactl list cards 2>/dev/null | grep -A 50 "$CARD_NAME" | grep -q "a2dp-sink"; then
+                switch_profile "a2dp-sink" "Music / A2DP (High Quality)"
+            else
+                echo -e "${YELLOW}⚠ A2DP profile not available — headphones may not support it right now${NC}"
+                echo -e "  Try reconnecting: ${CYAN}bluetoothctl disconnect $DEVICE_MAC && sleep 2 && bluetoothctl connect $DEVICE_MAC${NC}"
+            fi
+            ;;
+        off)
+            switch_profile "a2dp-sink" "Music / A2DP (High Quality)"
+            ;;
+    esac
+}
+
+# Main
+case "${1:-}" in
+    music|a2dp)
+        check_connected
+        switch_profile "a2dp-sink" "Music / A2DP (High Quality Stereo, no mic)"
+        ;;
+    meet|call|hfp|headset)
+        check_connected
+        switch_profile "headset-head-unit" "Google Meet / Calls (HFP + Microphone)"
+        ;;
+    status|st|s)
+        show_status
+        ;;
+    toggle|t|"")
+        if [[ -z "${1:-}" ]]; then
+            show_status
+            echo ""
+            echo -e "Commands: ${GREEN}bt-profile music${NC}  |  ${YELLOW}bt-profile meet${NC}  |  ${CYAN}bt-profile status${NC}"
+        else
+            toggle_profile
+        fi
+        ;;
+    *)
+        echo -e "${BOLD}bt-profile${NC} — JBL Tune 770NC profile switcher"
+        echo ""
+        echo -e "Usage:"
+        echo -e "  ${GREEN}bt-profile music${NC}    Switch to A2DP (🎵 high-quality stereo, no mic)"
+        echo -e "  ${YELLOW}bt-profile meet${NC}     Switch to HFP  (📞 mic enabled, for Google Meet)"  
+        echo -e "  ${CYAN}bt-profile status${NC}   Show current profile"
+        echo -e "  ${BLUE}bt-profile toggle${NC}   Toggle between music and meet modes"
+        echo ""
+        echo -e "  Device: JBL Tune 770NC ($DEVICE_MAC)"
+        ;;
+esac
