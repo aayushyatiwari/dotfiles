@@ -122,3 +122,6 @@ actest() {
 new_contest() {
   bash /home/imaayush/code/codingContests/new_contest.sh "$@"
 }
+
+# openvpn
+alias open_vpn="~/.secrets/vpn/open_vpn.sh"

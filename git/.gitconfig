@@ -5,3 +5,5 @@
 	email = kb24.aayush@gmail.com
 [includeIf "gitdir:~/work/"]
 	path = ~/.gitconfig-work
+[pull]
+	rebase = true
